@@ -5,17 +5,22 @@ import AppDataSource from "../../data-source";
 import { mockedCampaignInvalidInstitutionId, mockedCampaigns, mockedCampaignsInvalidStat } from "../mocks/campaigns.mocks";
 import { mockedInstitutionLogin, mockedVolunteersLogin } from "../mocks/login.mocks";
 import { mockedInstitution } from "../mocks/institutions.mocks";
+import { volunteerRequest } from "../mocks/volunteers.mocks.";
 
 describe("/campaign", () => {
     let connection: DataSource
 
     beforeAll(async () => {
         await AppDataSource.initialize().then((res) => {
-            connection = res;
+            connection = res
         })
         .catch((error) => {
             console.log(error)
-        });
+        })
+        await request(app).post('/volunteers').send(volunteerRequest)
+        await request(app).post('/register/institution').send(mockedInstitution)
+        const institutionLoginResponse = await request(app).post("/login").send(mockedInstitutionLogin);
+        await request(app).post('/register/institution').set("Authorization", `Bearer ${institutionLoginResponse.body.token}`).send(mockedInstitution)
         
     })
 
@@ -28,7 +33,7 @@ describe("/campaign", () => {
         const institution = await request(app).get('/register/institution')
         const institutionLoginResponse = await request(app).post("/login").send(mockedInstitutionLogin);
         mockedCampaigns.institutionId = institution.body[0].id
-        const response = await request(app).post('/properties').set("Authorization", `Bearer ${institutionLoginResponse.body.token}`).send(mockedCampaigns)
+        const response = await request(app).post('/campaigns').set("Authorization", `Bearer ${institutionLoginResponse.body.token}`).send(mockedCampaigns)
 
         expect(response.body).toHaveProperty("id")
         expect(response.body).toHaveProperty("name")
@@ -37,12 +42,12 @@ describe("/campaign", () => {
         expect(response.body).toHaveProperty("date_creation")
         expect(response.body).toHaveProperty("date_updated")
         expect(response.body).toHaveProperty("address")
-        expect(response.body.address).toHaveProperty("id")
-        expect(response.body.address).toHaveProperty("road")
-        expect(response.body.address).toHaveProperty("number")
-        expect(response.body.address).toHaveProperty("complement")
-        expect(response.body.address).toHaveProperty("city")
-        expect(response.body.address).toHaveProperty("state")
+        expect(response.body.address[0]).toHaveProperty("id")
+        expect(response.body.address[0]).toHaveProperty("road")
+        expect(response.body.address[0]).toHaveProperty("number")
+        expect(response.body.address[0]).toHaveProperty("complement")
+        expect(response.body.address[0]).toHaveProperty("city")
+        expect(response.body.address[0]).toHaveProperty("state")
         expect(response.status).toBe(201)
     })
 
