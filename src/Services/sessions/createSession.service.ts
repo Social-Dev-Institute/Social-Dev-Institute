@@ -43,8 +43,14 @@ const createSessionService = async ({ email, password }: IUserLogin) => {
       subject: account.id,
     }
   );
+  let type;
+  if (!accountIntitution) {
+    type = "volunteer";
+  } else {
+    type = "institution";
+  }
 
-  return token;
+  return { token: token, type: type };
 };
 
 export default createSessionService;

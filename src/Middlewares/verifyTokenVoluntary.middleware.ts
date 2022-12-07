@@ -1,34 +1,36 @@
 import { Request, Response, NextFunction } from "express";
-import "dotenv/config"
+import "dotenv/config";
 
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
-const verifyTokenVoluntaryMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-
-  let token = req.headers.authorization
+const verifyTokenVoluntaryMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let token = req.headers.authorization;
 
   if (!token) {
     return res.status(401).json({
-      message: 'Invalid token'
-    })
+      message: "Invalid token",
+    });
   }
 
-  token = token.split(' ')[1]
+  token = token.split(" ")[1];
 
   jwt.verify(token, process.env.SECRET_KEY as string, (error, decoded: any) => {
     if (error) {
       return res.status(401).json({
-        message: 'Invalid token'
-      })
+        message: "Invalid token",
+      });
     }
 
     req.user = {
-      id: decoded.sub
-    }
+      id: decoded.sub,
+    };
 
-    return next()
+    return next();
+  });
+};
 
-  })
-}
-
-export default verifyTokenVoluntaryMiddleware
+export default verifyTokenVoluntaryMiddleware;

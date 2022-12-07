@@ -7,10 +7,21 @@ import sessionRoutes from "./Router/sessions.routes";
 import handleErroMiddleware from "./Middlewares/handleErro.middleware";
 import homelessRoutes from "./Router/homeless.routes";
 import addressRouter from "./Router/address.routes";
-
+import cors from "cors";
 import campaignsRoutes from "./Router/campaigns.routes";
 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:3001",
+  "http://localhost:3000/register/institution",
+];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins,
+};
+
+// Then pass these options to cors:
+app.use(cors(options));
 app.use(express.json());
 
 app.use("/login", sessionRoutes);

@@ -69,7 +69,7 @@ const volunteersDeleteController = async (req: Request, res: Response) => {
 };
 
 const voluntaryListController = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = req.user.id;
 
   const voluntary = await voluntaryListService(id);
 
