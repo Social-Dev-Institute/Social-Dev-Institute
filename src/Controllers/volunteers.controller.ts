@@ -52,7 +52,7 @@ const volunteersListController = async (req: Request, res: Response) => {
 
 const volunteersUpdateController = async (req: Request, res: Response) => {
   const voluntary: IVolunteerRequest = req.body;
-  const id: string = req.params.id;
+  const id: string = req.user.id;
 
   const updatedUser = await volunteersUpdateService(id, voluntary);
 

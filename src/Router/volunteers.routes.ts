@@ -33,7 +33,7 @@ volunteersRoutes.get(
 );
 
 volunteersRoutes.patch(
-  "/:id",
+  "/profile",
   verifyTokenVoluntaryMiddleware,
   volunteersUpdateController
 );
